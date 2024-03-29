@@ -24,8 +24,11 @@ async def get_events_by_filter(date: str = None, organizer: str = None, status: 
 
 @router.get("/events/{event_id}", response_model=Event)
 async def get_event_by_id(event_id: int):
-    pass
-
+    events = EventFileManager.read_events_from_file()
+    for event in events:
+        if event.id == event_id:
+            return event
+    raise HTTPException(404, 'Event not found')
 
 @router.post("/events", response_model=Event)
 async def create_event(event: Event):
