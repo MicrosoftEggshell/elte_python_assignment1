@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 from .models import Event
 from .file_storage import EventFileManager
+from .event_analyzer import EventAnalyzer
 
 router = APIRouter()
 
@@ -68,4 +69,8 @@ async def delete_event(event_id: int):
 
 @router.get("/events/joiners/multiple-meetings")
 async def get_joiners_multiple_meetings():
-    pass
+    events = EventFileManager.read_events_from_file()
+    multiple_joiners = EventAnalyzer.get_joiners_multiple_meetings_method(events)
+    if multiple_joiners:
+        return multiple_joiners
+    raise HTTPException(404, 'No joiners attending at least 2 meetings')
