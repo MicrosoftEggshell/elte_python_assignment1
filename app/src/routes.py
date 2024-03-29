@@ -30,10 +30,15 @@ async def get_event_by_id(event_id: int):
             return event
     raise HTTPException(404, 'Event not found')
 
+
 @router.post("/events", response_model=Event)
 async def create_event(event: Event):
-    pass
-
+    events = EventFileManager.read_events_from_file()
+    if any(e.id == event.id for e in events):
+        raise HTTPException(409, 'Event ID already exists')
+    events.append(event)
+    EventFileManager.write_events_to_file(events)
+    return event
 
 @router.put("/events/{event_id}", response_model=Event)
 async def update_event(event_id: int, event: Event):
