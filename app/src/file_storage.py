@@ -7,7 +7,7 @@ class EventFileManager:
     FILE_PATH = 'event.json'
 
     @classmethod
-    def read_events_from_file(cls):
+    def read_events_from_file(cls) -> List[Event]:
         try:
             with open(cls.FILE_PATH, encoding='utf-8') as f:
                 content = json.load(f)
